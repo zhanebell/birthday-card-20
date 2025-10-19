@@ -1,7 +1,6 @@
 // ===================================
 // STATE & CONFIG
 // ===================================
-
 let compartmentsOpened = 0;
 const totalCompartments = 8;
 let wheelSpinning = false;
@@ -85,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFlipPanels();
     initializeDieCuts();
     initializeAccordions();
-    initializeScratchCards(); // tap-to-reveal version
+    initializeScratchCards();
     initializeMagnetLocks();
     initializeRibbonLocks();
     initializeNotebookPages();
@@ -99,21 +98,24 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===================================
 function initializeCover() {
     const cover = document.getElementById('cover');
-    if (!cover) return;
     const cardFront = cover.querySelector('.card-front');
-    if (!cardFront) return;
-
-    cardFront.addEventListener('click', openCard);
+    
+    cardFront.addEventListener('click', () => {
+        openCard();
+    });
 }
 
 function openCard() {
     const cover = document.getElementById('cover');
     const cardInterior = document.getElementById('card-interior');
-    if (!cover || !cardInterior) return;
-
+    
+    // Add opening class with animation
     cover.classList.add('opening');
+    
+    // Create confetti
     createConfetti();
-
+    
+    // Show card interior after animation
     setTimeout(() => {
         cover.classList.add('hidden');
         cardInterior.classList.remove('hidden');
@@ -122,9 +124,8 @@ function openCard() {
 
 function createConfetti() {
     const container = document.getElementById('confetti-container');
-    if (!container) return;
     const colors = ['#A4B494', '#7A8A6F', '#8B7355', '#D4C5B0'];
-
+    
     for (let i = 0; i < 50; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti-piece';
@@ -132,10 +133,15 @@ function createConfetti() {
         confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.animationDelay = Math.random() * 0.3 + 's';
         confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-
-        if (Math.random() > 0.5) confetti.style.borderRadius = '50%';
-
+        
+        // Random shapes
+        if (Math.random() > 0.5) {
+            confetti.style.borderRadius = '50%';
+        }
+        
         container.appendChild(confetti);
+        
+        // Remove after animation
         setTimeout(() => confetti.remove(), 3000);
     }
 }
@@ -145,7 +151,9 @@ function createConfetti() {
 // ===================================
 function initializePullTabs() {
     const pullTabs = document.querySelectorAll('.pull-tab');
+    
     pullTabs.forEach(tab => {
+        // Simple click to reveal
         tab.addEventListener('click', () => {
             tab.classList.add('pulled');
             checkCompartmentOpened(tab.closest('.compartment'));
@@ -158,6 +166,7 @@ function initializePullTabs() {
 // ===================================
 function initializeFlipPanels() {
     const flipPanels = document.querySelectorAll('.flip-panel');
+    
     flipPanels.forEach(panel => {
         panel.addEventListener('click', () => {
             panel.classList.toggle('flipped');
@@ -173,15 +182,19 @@ function initializeFlipPanels() {
 // ===================================
 function initializeDieCuts() {
     const dieCuts = document.querySelectorAll('.die-cut-heart');
+    
     dieCuts.forEach(heart => {
         heart.addEventListener('mouseenter', () => {
             heart.classList.add('revealed');
         });
+        
         heart.addEventListener('click', () => {
             heart.classList.add('revealed');
             checkCompartmentOpened(heart.closest('.compartment'));
         });
+        
         heart.addEventListener('mouseleave', () => {
+            // Keep revealed after click
             if (!heart.closest('.compartment').classList.contains('opened')) {
                 setTimeout(() => heart.classList.remove('revealed'), 300);
             }
@@ -194,9 +207,10 @@ function initializeDieCuts() {
 // ===================================
 function initializeAccordions() {
     const accordions = document.querySelectorAll('.accordion-pocket');
+    
     accordions.forEach(accordion => {
         const header = accordion.querySelector('.accordion-header');
-        if (!header) return;
+        
         header.addEventListener('click', () => {
             accordion.classList.toggle('expanded');
             if (accordion.classList.contains('expanded')) {
@@ -207,47 +221,98 @@ function initializeAccordions() {
 }
 
 // ===================================
-// SCRATCH CARDS (Tap-to-Reveal Only)
+// SCRATCH CARDS
 // ===================================
 function initializeScratchCards() {
     const scratchContainers = document.querySelectorAll('.scratch-container');
-
+    
     scratchContainers.forEach(container => {
         const canvas = container.querySelector('.scratch-canvas');
-        if (!canvas) return;
-
         const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
         const rect = container.getBoundingClientRect();
-
-        // Size canvas to container (basic sizing; if container is hidden at init, consider re-running on show)
-        canvas.width = Math.max(1, Math.floor(rect.width));
-        canvas.height = Math.max(1, Math.floor(rect.height));
-
-        // Draw cover layer
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        
+        // Draw scratch layer
         ctx.fillStyle = '#C9B8A0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Prompt text
+        
+        // Add text
         ctx.fillStyle = '#7A8A6F';
         ctx.font = '20px "Dancing Script", cursive';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('Tap to reveal ✨', canvas.width / 2, canvas.height / 2);
-
-        const revealAll = () => {
+        ctx.fillText('Scratch to reveal ✨', canvas.width / 2, canvas.height / 2);
+        
+        let isScratching = false;
+        let scratchedPercent = 0;
+        
+        // Mouse events
+        canvas.addEventListener('mousedown', (e) => {
+            isScratching = true;
+            scratch(e);
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isScratching) scratch(e);
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isScratching = false;
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isScratching = false;
+        });
+        
+        // Touch events
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isScratching = true;
+            scratch(e);
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isScratching) scratch(e);
+        });
+        
+        canvas.addEventListener('touchend', () => {
+            isScratching = false;
+        });
+        
+        // Click to reveal all (easier option)
+        canvas.addEventListener('click', () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            canvas.style.opacity = '0';           // fade if CSS transition exists
-            canvas.style.pointerEvents = 'none';  // stop further input
+            canvas.style.opacity = '0';
             checkCompartmentOpened(container.closest('.compartment'));
-        };
-
-        // Click (desktop)
-        canvas.addEventListener('click', revealAll);
-
-        // Touch (mobile)
-        canvas.addEventListener('touchstart', () => {
-            revealAll();
-        }, { passive: true });
+        });
+        
+        function scratch(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+            const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
+            
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Check scratched percentage
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let transparent = 0;
+            for (let i = 3; i < imageData.data.length; i += 4) {
+                if (imageData.data[i] === 0) transparent++;
+            }
+            
+            scratchedPercent = (transparent / (imageData.data.length / 4)) * 100;
+            
+            if (scratchedPercent > 50) {
+                canvas.style.opacity = '0';
+                checkCompartmentOpened(container.closest('.compartment'));
+            }
+        }
     });
 }
 
@@ -256,7 +321,9 @@ function initializeScratchCards() {
 // ===================================
 function initializeMagnetLocks() {
     const magnetLocks = document.querySelectorAll('.magnet-lock');
+    
     magnetLocks.forEach(lock => {
+        // Simple click to unlock
         lock.addEventListener('click', () => {
             lock.classList.add('unlocked');
             checkCompartmentOpened(lock.closest('.compartment'));
@@ -269,29 +336,29 @@ function initializeMagnetLocks() {
 // ===================================
 function initializeRibbonLocks() {
     const ribbonLocks = document.querySelectorAll('.ribbon-lock');
+    
     ribbonLocks.forEach(lock => {
         const bow = lock.querySelector('.ribbon-bow');
-        if (!bow) return;
-
         let holdTimer = null;
-
+        
         bow.addEventListener('mousedown', startUntying);
-        bow.addEventListener('touchstart', startUntying, { passive: false });
-
+        bow.addEventListener('touchstart', startUntying);
+        
         bow.addEventListener('mouseup', stopUntying);
         bow.addEventListener('touchend', stopUntying);
         bow.addEventListener('mouseleave', stopUntying);
-
+        
         function startUntying(e) {
             e.preventDefault();
             bow.classList.add('untying');
+            
             holdTimer = setTimeout(() => {
                 lock.classList.add('untied');
                 bow.classList.remove('untying');
                 checkCompartmentOpened(lock.closest('.compartment'));
             }, 1500);
         }
-
+        
         function stopUntying() {
             bow.classList.remove('untying');
             if (holdTimer) {
@@ -307,13 +374,13 @@ function initializeRibbonLocks() {
 // ===================================
 function initializeNotebookPages() {
     const notebookPages = document.querySelectorAll('.notebook-page');
+    
     notebookPages.forEach(page => {
         page.addEventListener('click', () => {
             if (!page.classList.contains('torn')) {
                 page.classList.add('torn');
                 const keepsake = page.parentElement.querySelector('.keepsake-pile');
-                if (!keepsake) return;
-
+                
                 setTimeout(() => {
                     keepsake.classList.add('visible');
                     checkCompartmentOpened(page.closest('.compartment'));
@@ -328,34 +395,34 @@ function initializeNotebookPages() {
 // ===================================
 function initializeSliderPuzzle() {
     const puzzle = document.getElementById('slider-puzzle');
-    if (!puzzle) return;
-
     const tiles = puzzle.querySelectorAll('.puzzle-tile');
+    
     tiles.forEach(tile => {
         tile.addEventListener('click', () => {
             const emptyTile = puzzle.querySelector('.puzzle-tile:empty');
-            if (!emptyTile) return;
-
             const tilePos = parseInt(tile.dataset.position);
             const emptyPos = parseInt(emptyTile.dataset.position);
-
-            // Adjacent (simple 3-wide grid logic)
+            
+            // Check if tiles are adjacent
             if (Math.abs(tilePos - emptyPos) === 1 || Math.abs(tilePos - emptyPos) === 3) {
+                // Swap
                 const tempContent = tile.textContent;
                 tile.textContent = emptyTile.textContent;
                 emptyTile.textContent = tempContent;
+                
+                // Check if solved
                 checkPuzzleSolved();
             }
         });
     });
-
+    
     function checkPuzzleSolved() {
-        const tilesNow = Array.from(puzzle.querySelectorAll('.puzzle-tile'));
-        const values = tilesNow.map(t => t.textContent);
+        const tiles = Array.from(puzzle.querySelectorAll('.puzzle-tile'));
+        const values = tiles.map(t => t.textContent);
+        
         if (values.join('') === '20') {
             setTimeout(() => {
-                const solved = puzzle.querySelector('.puzzle-solution');
-                if (solved) solved.classList.remove('hidden');
+                puzzle.querySelector('.puzzle-solution').classList.remove('hidden');
                 setTimeout(() => {
                     puzzle.classList.add('hidden');
                     showTwentyThings();
@@ -373,33 +440,35 @@ function initializeTwentyThingsWheel() {
     const wheel = document.querySelector('.wheel');
     const thingsDisplay = document.querySelector('.things-display');
     const spinAgainBtn = document.querySelector('.spin-again-btn');
-
-    // If the wheel UI isn't on this page/section, bail safely
-    if (!spinBtn || !wheel || !thingsDisplay || !spinAgainBtn) return;
-
+    
+    if (!spinBtn) return;
+    
     spinBtn.addEventListener('click', spinWheel);
     spinAgainBtn.addEventListener('click', () => {
         thingsDisplay.classList.add('hidden');
         spinBtn.disabled = false;
     });
-
+    
     function spinWheel() {
         if (wheelSpinning) return;
-
+        
         wheelSpinning = true;
         spinBtn.disabled = true;
-
+        
+        // Random rotation (multiple spins + random position)
         const spins = 5 + Math.random() * 3;
         const randomDegree = Math.random() * 360;
         const totalRotation = (spins * 360) + randomDegree;
-
+        
         wheel.style.transform = `rotate(${totalRotation}deg)`;
-
+        
         setTimeout(() => {
             wheelSpinning = false;
-
+            
+            // Determine which category landed
             const normalizedDegree = totalRotation % 360;
             let category;
+            
             if (normalizedDegree >= 0 && normalizedDegree < 120) {
                 category = 'reasons';
             } else if (normalizedDegree >= 120 && normalizedDegree < 240) {
@@ -407,25 +476,26 @@ function initializeTwentyThingsWheel() {
             } else {
                 category = 'dates';
             }
+            
             displayTwentyThings(category);
         }, 3000);
     }
-
+    
     function displayTwentyThings(category) {
         const titles = {
             reasons: '20 Reasons I Love You 💕',
             future: '20 Things I Look Forward To 🌟',
             dates: '20 Date Ideas for Us 💝'
         };
-
+        
         const categoryTitle = document.querySelector('.things-category-title');
         const thingsList = document.querySelector('.things-list');
-        if (!categoryTitle || !thingsList) return;
-
+        
         categoryTitle.textContent = titles[category];
         thingsList.innerHTML = '';
-
-        const items = twentyThingsData[category] || [];
+        
+        const items = twentyThingsData[category];
+        
         items.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'thing-item';
@@ -433,9 +503,10 @@ function initializeTwentyThingsWheel() {
             div.innerHTML = `<span class="thing-number">${index + 1}</span>${item}`;
             thingsList.appendChild(div);
         });
-
+        
         thingsDisplay.classList.remove('hidden');
-
+        
+        // Add letter button after display is shown
         setTimeout(() => {
             initializeLetterButton();
         }, 500);
@@ -445,8 +516,7 @@ function initializeTwentyThingsWheel() {
 function showTwentyThings() {
     const twentyThings = document.getElementById('twenty-things');
     const cardInterior = document.getElementById('card-interior');
-    if (!twentyThings || !cardInterior) return;
-
+    
     cardInterior.classList.add('hidden');
     twentyThings.classList.remove('hidden');
 }
@@ -456,8 +526,9 @@ function showTwentyThings() {
 // ===================================
 function initializeEnvelope() {
     const envelope = document.querySelector('.envelope');
+    
     if (!envelope) return;
-
+    
     envelope.addEventListener('click', () => {
         envelope.classList.toggle('opened');
     });
@@ -468,27 +539,30 @@ function initializeEnvelope() {
 // ===================================
 function checkCompartmentOpened(compartment) {
     if (!compartment || compartment.classList.contains('opened')) return;
-
+    
     compartment.classList.add('opened');
     compartmentsOpened++;
-
+    
+    // Check if all compartments opened
     if (compartmentsOpened >= totalCompartments) {
-        setTimeout(showCenterPopup, 1000);
+        setTimeout(() => {
+            showCenterPopup();
+        }, 1000);
     }
 }
 
 function showCenterPopup() {
     const popup = document.getElementById('center-popup');
-    if (!popup) return;
     const continueBtn = popup.querySelector('.continue-btn');
-    if (!continueBtn) return;
-
+    
     popup.classList.remove('hidden');
-
+    
     continueBtn.addEventListener('click', () => {
         popup.classList.add('hidden');
+        
+        // Show slider puzzle
         const sliderPuzzle = document.getElementById('slider-puzzle');
-        if (sliderPuzzle) sliderPuzzle.classList.remove('hidden');
+        sliderPuzzle.classList.remove('hidden');
     });
 }
 
@@ -498,18 +572,15 @@ function showCenterPopup() {
 function showFinalLetter() {
     const twentyThings = document.getElementById('twenty-things');
     const finalLetter = document.getElementById('final-letter');
-    if (!twentyThings || !finalLetter) return;
-
     const backBtn = finalLetter.querySelector('.back-to-card-btn');
-
+    
     twentyThings.classList.add('hidden');
     finalLetter.classList.remove('hidden');
-
+    
     if (backBtn) {
         backBtn.addEventListener('click', () => {
             finalLetter.classList.add('hidden');
-            const interior = document.getElementById('card-interior');
-            if (interior) interior.classList.remove('hidden');
+            document.getElementById('card-interior').classList.remove('hidden');
         });
     }
 }
@@ -517,16 +588,19 @@ function showFinalLetter() {
 // Initialize letter button when things display is shown
 function initializeLetterButton() {
     const thingsDisplay = document.querySelector('.things-display');
-    if (!thingsDisplay) return;
-
-    let letterBtn = thingsDisplay.querySelector('.letter-btn');
-    if (!letterBtn) {
-        letterBtn = document.createElement('button');
-        letterBtn.className = 'continue-btn letter-btn';
-        letterBtn.textContent = 'Continue to Your Letter →';
-        letterBtn.style.marginTop = '20px';
-        letterBtn.addEventListener('click', showFinalLetter);
-        thingsDisplay.appendChild(letterBtn);
+    
+    if (thingsDisplay) {
+        // Check if button already exists
+        let letterBtn = thingsDisplay.querySelector('.letter-btn');
+        
+        if (!letterBtn) {
+            letterBtn = document.createElement('button');
+            letterBtn.className = 'continue-btn letter-btn';
+            letterBtn.textContent = 'Continue to Your Letter →';
+            letterBtn.style.marginTop = '20px';
+            letterBtn.addEventListener('click', showFinalLetter);
+            thingsDisplay.appendChild(letterBtn);
+        }
     }
 }
 
@@ -534,7 +608,8 @@ function initializeLetterButton() {
 // SOUND EFFECTS (Optional)
 // ===================================
 function playSound(type) {
-    // hook up sounds here if desired
+    // You can add sound effects here if desired
+    // For now, just visual feedback
 }
 
 // ===================================
@@ -551,7 +626,9 @@ function createRipple(x, y, container) {
     ripple.style.background = 'rgba(164, 180, 148, 0.5)';
     ripple.style.transform = 'translate(-50%, -50%) scale(0)';
     ripple.style.animation = 'ripple 0.6s ease-out';
+    
     container.appendChild(ripple);
+    
     setTimeout(() => ripple.remove(), 600);
 }
 
@@ -564,8 +641,6 @@ style.textContent = `
             opacity: 0;
         }
     }
-    /* Optional nice fade when revealing the scratch canvas */
-    .scratch-canvas { transition: opacity 0.25s ease; touch-action: none; }
 `;
 document.head.appendChild(style);
 
