@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFlipPanels();
     initializeDieCuts();
     initializeAccordions();
-    initializeScratchCards();
+    initializeScratchCards(); // <- updated to tap-to-reveal only
     initializeMagnetLocks();
     initializeRibbonLocks();
     initializeNotebookPages();
@@ -221,111 +221,50 @@ function initializeAccordions() {
 }
 
 // ===================================
-// SCRATCH CARDS
+// SCRATCH CARDS (Updated: Tap-to-Reveal Only)
 // ===================================
 function initializeScratchCards() {
-  const scratchContainers = document.querySelectorAll('.scratch-container');
+    const scratchContainers = document.querySelectorAll('.scratch-container');
+    
+    scratchContainers.forEach(container => {
+        const canvas = container.querySelector('.scratch-canvas');
+        if (!canvas) return;
 
-  scratchContainers.forEach(container => {
-    const canvas = container.querySelector('.scratch-canvas');
-    const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d');
 
-    // Set canvas size
-    const rect = container.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
+        // Size canvas to container (simple sizing; if container is hidden at init, re-run after show)
+        const rect = container.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
 
-    // Draw scratch layer (this is the part they'll tap to reveal)
-    ctx.fillStyle = '#C9B8A0';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Draw the cover layer users will tap to reveal
+        ctx.fillStyle = '#C9B8A0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Add text prompt
-    ctx.fillStyle = '#7A8A6F';
-    ctx.font = '20px "Dancing Script", cursive';
-    ctx.textAlign = 'center';
-    ctx.fillText('Tap to reveal ✨', canvas.width / 2, canvas.height / 2);
+        // Prompt text
+        ctx.fillStyle = '#7A8A6F';
+        ctx.font = '20px "Dancing Script", cursive';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Tap to reveal ✨', canvas.width / 2, canvas.height / 2);
 
-    // ✅ Tap to reveal everything
-    canvas.addEventListener('click', () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.style.opacity = '0';
-      checkCompartmentOpened(container.closest('.compartment'));
-    });
-
-    // ✅ Optional: support tap on phones too
-    canvas.addEventListener('touchstart', () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      canvas.style.opacity = '0';
-      checkCompartmentOpened(container.closest('.compartment'));
-    }, { passive: true });
-  });
-}
-        
-        // Mouse events
-        canvas.addEventListener('mousedown', (e) => {
-            isScratching = true;
-            scratch(e);
-        });
-        
-        canvas.addEventListener('mousemove', (e) => {
-            if (isScratching) scratch(e);
-        });
-        
-        canvas.addEventListener('mouseup', () => {
-            isScratching = false;
-        });
-        
-        canvas.addEventListener('mouseleave', () => {
-            isScratching = false;
-        });
-        
-        // Touch events
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isScratching = true;
-            scratch(e);
-        });
-        
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            if (isScratching) scratch(e);
-        });
-        
-        canvas.addEventListener('touchend', () => {
-            isScratching = false;
-        });
-        
-        // Click to reveal all (easier option)
-        canvas.addEventListener('click', () => {
+        // Helper to reveal + mark compartment opened
+        const revealAll = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // fade out if you have CSS transition; otherwise instantly hide is fine
             canvas.style.opacity = '0';
+            // Optionally disable further events:
+            // canvas.style.pointerEvents = 'none';
             checkCompartmentOpened(container.closest('.compartment'));
-        });
-        
-        function scratch(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
-            const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
-            
-            ctx.globalCompositeOperation = 'destination-out';
-            ctx.beginPath();
-            ctx.arc(x, y, 25, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Check scratched percentage
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            let transparent = 0;
-            for (let i = 3; i < imageData.data.length; i += 4) {
-                if (imageData.data[i] === 0) transparent++;
-            }
-            
-            scratchedPercent = (transparent / (imageData.data.length / 4)) * 100;
-            
-            if (scratchedPercent > 50) {
-                canvas.style.opacity = '0';
-                checkCompartmentOpened(container.closest('.compartment'));
-            }
-        }
+        };
+
+        // Click (desktop)
+        canvas.addEventListener('click', revealAll);
+
+        // Touch (mobile)
+        canvas.addEventListener('touchstart', () => {
+            revealAll();
+        }, { passive: true });
     });
 }
 
