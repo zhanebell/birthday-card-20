@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 20th Birthday! 💝</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Cover View -->
+    <div id="cover" class="cover">
+        <div class="card-front">
+            <div class="texture-overlay"></div>
+            <div class="corner-tape top-left"></div>
+            <div class="corner-tape top-right"></div>
+            <div class="corner-tape bottom-left"></div>
+            <div class="corner-tape bottom-right"></div>
+            
+            <div class="wax-seal">
+                <div class="seal-content">
+                    <div class="seal-number">20</div>
+                    <div class="seal-text">Open Me,<br>Birthday Girl</div>
+                </div>
+            </div>
+            
+            <div class="cover-decoration">
+                <div class="ribbon-accent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <!-- Main Card Interior -->
+    <div id="card-interior" class="card-interior hidden">
+        <div class="card-left-page">
+            <div class="texture-overlay"></div>
+            
+            <!-- Greeting Animation -->
+            <div class="greeting-section">
+                <h1 class="main-greeting">Happy Birthday My Baby! 🎉</h1>
+                <p class="sub-greeting">Welcome to your special day...</p>
+            </div>
+
+            <!-- Pull Tab 1 -->
+            <div class="compartment pull-tab-container" data-compartment="1">
+                <div class="compartment-hint">
+                    <span class="hint-icon">🎀</span>
+                    <span class="hint-text">Tap me!</span>
+                </div>
+                <div class="pull-tab">
+                    <div class="tab-grip">|||</div>
+                    <div class="tab-content">
+                        <p>"Hi my baby! I love you and hope you're feeling outstanding today!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flip Panel -->
+            <div class="compartment flip-panel-container" data-compartment="2">
+                <div class="compartment-hint">
+                    <span class="hint-icon">📖</span>
+                    <span class="hint-text">Open the door</span>
+                </div>
+                <div class="flip-panel">
+                    <div class="panel-front">
+                        <div class="latch-icon">🔒</div>
+                        <p class="panel-label">A Memory</p>
+                    </div>
+                    <div class="panel-back">
+                        <p>"My favorite memories of this year were when you came to church with me!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secret Die-Cut Heart -->
+            <div class="compartment die-cut-container" data-compartment="3">
+                <div class="compartment-hint">
+                    <span class="hint-icon">💗</span>
+                    <span class="hint-text">Touch the heart</span>
+                </div>
+                <div class="die-cut-heart">
+                    <svg viewBox="0 0 100 100" class="heart-svg">
+                        <path d="M50,90 C50,90 10,60 10,35 C10,20 20,10 32,10 C40,10 47,15 50,22 C53,15 60,10 68,10 C80,10 90,20 90,35 C90,60 50,90 50,90 Z" 
+                              fill="var(--sage-green)" opacity="0.3"/>
+                    </svg>
+                    <div class="heart-message">
+                        <p>"You melt my heart (aw cringe)"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-right-page">
+            <div class="texture-overlay"></div>
+
+            <!-- Accordion Pocket -->
+            <div class="compartment accordion-container" data-compartment="4">
+                <div class="compartment-hint">
+                    <span class="hint-icon">📸</span>
+                    <span class="hint-text">Expand me</span>
+                </div>
+                <div class="accordion-pocket">
+                    <div class="accordion-header">
+                        <span>Moments Together</span>
+                        <span class="accordion-toggle">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="polaroid-grid">
+                            <div class="polaroid">
+                                <div class="polaroid-image">🌅</div>
+                                <p class="polaroid-caption">Our sunset dates</p>
+                            </div>
+                            <div class="polaroid">
+                                <div class="polaroid-image">☕</div>
+                                <p class="polaroid-caption">Sunday morning dates</p>
+                            </div>
+                            <div class="polaroid">
+                                <div class="polaroid-image">🎵</div>
+                                <p class="polaroid-caption">Making playlists together</p>
+                            </div>
+                            <div class="polaroid">
+                                <div class="polaroid-image">🌙</div>
+                                <p class="polaroid-caption">Late Night Drives</p>
+                            </div>
+                            <div class="polaroid">
+                                <div class="polaroid-image">💝</div>
+                                <p class="polaroid-caption">Staying up late talking</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scratch Off -->
+            <div class="compartment scratch-container" data-compartment="5">
+                <div class="compartment-hint">
+                    <span class="hint-icon">✨</span>
+                    <span class="hint-text">Scratch to reveal</span>
+                </div>
+                <div class="scratch-card">
+                    <canvas class="scratch-canvas"></canvas>
+                    <div class="scratch-message">
+                        <p>"Aw my little baby!! Hi my baby"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Magnet Lock -->
+            <div class="compartment magnet-container" data-compartment="6">
+                <div class="compartment-hint">
+                    <span class="hint-icon">🧲</span>
+                    <span class="hint-text">Tap to unlock</span>
+                </div>
+                <div class="magnet-lock">
+                    <div class="magnet-piece magnet-left">
+                        <div class="magnet-symbol">Z</div>
+                    </div>
+                    <div class="magnet-piece magnet-right">
+                        <div class="magnet-symbol">Q</div>
+                    </div>
+                    <div class="magnet-content">
+                        <p>"We're magnetically drawn to each other hehehe"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ribbon Untie -->
+            <div class="compartment ribbon-container" data-compartment="7">
+                <div class="compartment-hint">
+                    <span class="hint-icon">🎀</span>
+                    <span class="hint-text">Hold to untie</span>
+                </div>
+                <div class="ribbon-lock">
+                    <div class="ribbon-bow">
+                        <svg viewBox="0 0 100 50" class="bow-svg">
+                            <path d="M20,25 Q30,10 50,25 Q70,10 80,25" stroke="var(--sage-green)" stroke-width="3" fill="none"/>
+                            <circle cx="50" cy="25" r="8" fill="var(--sage-green)"/>
+                        </svg>
+                        <div class="untie-progress"></div>
+                    </div>
+                    <div class="ribbon-content">
+                        <p>"When are we going to stop playing eye tag? Come fart with ya boy"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notebook Tear-Out -->
+            <div class="compartment notebook-container" data-compartment="8">
+                <div class="compartment-hint">
+                    <span class="hint-icon">📝</span>
+                    <span class="hint-text">Tear this note</span>
+                </div>
+                <div class="notebook-page">
+                    <div class="perforation"></div>
+                    <div class="notebook-content">
+                        <p class="notebook-text">Q, I love you ♡</p>
+                    </div>
+                </div>
+                <div class="keepsake-pile"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Center Pop-Up (appears after opening compartments) -->
+    <div id="center-popup" class="center-popup hidden">
+        <div class="popup-card">
+            <div class="popup-content">
+                <h2 class="popup-heading">Twenty & Thriving! ✨</h2>
+                <div class="popup-message">
+                    <p>You've discovered all the secrets...</p>
+                    <p>Now here's the biggest one:</p>
+                    <h3 class="big-reveal">You make every day brighter! 🌟</h3>
+                </div>
+                <button class="continue-btn">Continue to Your Letter →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slider Puzzle -->
+    <div id="slider-puzzle" class="slider-puzzle hidden">
+        <div class="puzzle-container">
+            <h3 class="puzzle-title">Solve the puzzle for a special surprise!</h3>
+            <div class="puzzle-grid">
+                <div class="puzzle-tile" data-position="0">2</div>
+                <div class="puzzle-tile" data-position="1">0</div>
+                <div class="puzzle-tile" data-position="2"></div>
+            </div>
+            <div class="puzzle-solution hidden">
+                <p class="puzzle-reveal">"20 years of YOU being amazing!" 🎂</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 20 Things Wheel -->
+    <div id="twenty-things" class="twenty-things-section hidden">
+        <div class="things-container">
+            <h2 class="things-heading">✨ The 20 Things Experience ✨</h2>
+            <p class="things-subheading">Spin the wheel to discover...</p>
+            
+            <div class="wheel-container">
+                <div class="wheel">
+                    <svg class="wheel-svg" viewBox="0 0 200 200">
+                        <!-- Segment 1 - Reasons (0-120 degrees) -->
+                        <path d="M 100 100 L 100 0 A 100 100 0 0 1 186.6 150 Z" fill="#A4B494" class="wheel-path" data-category="reasons"/>
+                        <!-- Segment 2 - Future (120-240 degrees) -->
+                        <path d="M 100 100 L 186.6 150 A 100 100 0 0 1 13.4 150 Z" fill="#7A8A6F" class="wheel-path" data-category="future"/>
+                        <!-- Segment 3 - Dates (240-360 degrees) -->
+                        <path d="M 100 100 L 13.4 150 A 100 100 0 0 1 100 0 Z" fill="#8B7355" class="wheel-path" data-category="dates"/>
+                        
+                        <!-- Text Labels -->
+                        <text x="100" y="40" text-anchor="middle" fill="white" font-size="14" font-weight="600" font-family="Quicksand">Love You</text>
+                        <text x="145" y="130" text-anchor="middle" fill="white" font-size="14" font-weight="600" font-family="Quicksand">Future</text>
+                        <text x="55" y="130" text-anchor="middle" fill="white" font-size="14" font-weight="600" font-family="Quicksand">Dates</text>
+                    </svg>
+                </div>
+                <button class="spin-btn">SPIN</button>
+                <div class="wheel-pointer">▼</div>
+            </div>
+
+            <div class="things-display hidden">
+                <h3 class="things-category-title"></h3>
+                <div class="things-list">
+                    <!-- Items will be populated by JavaScript -->
+                </div>
+                <button class="spin-again-btn">Spin Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Letter -->
+    <div id="final-letter" class="final-letter hidden">
+        <div class="letter-container">
+            <div class="letter-paper">
+                <div class="letter-header">
+                    <p class="letter-date">Your 20th Birthday</p>
+                    <h2 class="letter-title">A Letter for You 💌</h2>
+                </div>
+                
+                <div class="letter-body">
+                    <p>To my baby girl munchkins,</p>
+                    
+                    <p>Happy 20th birthday! I can't believe we get to celebrate this huge milestone together. You are the youngest person EVER!</p>
+                    
+                    <p>I know you always make me the most amazing handmade cards, filled with love, creativity, and all those little details, and I could never do something like that. This is my attempt to give you something hopefully as special – a virtual card! I had to watch a lot of YouTube tutorials and ask Chat how to pull this off, but I hope you liked it.</p>
+                    
+                    <p>Thank you for being an awesome partner and for making me feel loved. You truly rock and I can't believe you're 20 now. You're basically like an actual adult now... still the youngest person ever though. What's next? You turning 21? Lol.</p>
+                    
+                    <p>I wanted to pick you some puakenikeni from the neighbor but I drove around and honestly couldn't find the house you're always talking about so that's kind of my bad haha. Anyways, happy birthday. I'm grateful for you, and hope you have a blessed day.</p>
+                    
+                    <p>I love you more than words can express. Can I get an Amen. Woohoo.</p>
+                    
+                    <p class="letter-signature">Forever yours,<br>zkb</p>
+                </div>
+
+                <div class="letter-footer">
+                    <button class="back-to-card-btn">Explore the Card Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Envelope Insert (appears somewhere in the flow) -->
+    <div id="envelope" class="envelope-section hidden">
+        <div class="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body">
+                <p class="envelope-label">Open for a special link 💝</p>
+            </div>
+            <div class="envelope-content">
+                <div class="envelope-card">
+                    <h4>Something Special</h4>
+                    <p>Here's a little something for us:</p>
+                    <a href="#" class="special-link" target="_blank">🎵 Our Playlist</a>
+                    <p class="envelope-note">(You can customize this link!)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
