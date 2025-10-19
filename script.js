@@ -224,29 +224,42 @@ function initializeAccordions() {
 // SCRATCH CARDS
 // ===================================
 function initializeScratchCards() {
-    const scratchContainers = document.querySelectorAll('.scratch-container');
-    
-    scratchContainers.forEach(container => {
-        const canvas = container.querySelector('.scratch-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // Set canvas size
-        const rect = container.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-        
-        // Draw scratch layer
-        ctx.fillStyle = '#C9B8A0';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // Add text
-        ctx.fillStyle = '#7A8A6F';
-        ctx.font = '20px "Dancing Script", cursive';
-        ctx.textAlign = 'center';
-        ctx.fillText('Scratch to reveal ✨', canvas.width / 2, canvas.height / 2);
-        
-        let isScratching = false;
-        let scratchedPercent = 0;
+  const scratchContainers = document.querySelectorAll('.scratch-container');
+
+  scratchContainers.forEach(container => {
+    const canvas = container.querySelector('.scratch-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+
+    // Draw scratch layer (this is the part they'll tap to reveal)
+    ctx.fillStyle = '#C9B8A0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Add text prompt
+    ctx.fillStyle = '#7A8A6F';
+    ctx.font = '20px "Dancing Script", cursive';
+    ctx.textAlign = 'center';
+    ctx.fillText('Tap to reveal ✨', canvas.width / 2, canvas.height / 2);
+
+    // ✅ Tap to reveal everything
+    canvas.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.opacity = '0';
+      checkCompartmentOpened(container.closest('.compartment'));
+    });
+
+    // ✅ Optional: support tap on phones too
+    canvas.addEventListener('touchstart', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.opacity = '0';
+      checkCompartmentOpened(container.closest('.compartment'));
+    }, { passive: true });
+  });
+}
         
         // Mouse events
         canvas.addEventListener('mousedown', (e) => {
